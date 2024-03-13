@@ -70,6 +70,7 @@ def main():
                     playerClicks = []  # clear player clicks
                     moveMade = False
                     animate = False
+                    gameOver = False
         if moveMade:
             if animate:
                 animateMove(gs.moveLog[-1], screen, gs.board, clock)
