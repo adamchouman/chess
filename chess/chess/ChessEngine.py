@@ -280,7 +280,7 @@ class GameState():
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endPiece = self.board[endRow][endCol]
                 if endPiece[0] == enemyColor:
-                    moves.append(Move((r, c), (endRow, endCol), self.board, isJester=True))
+                    moves.append(Move((r, c), (endRow, endCol), self.board, isJester=False))
                 elif endPiece[0] != allyColor:
                     moves.append(Move((r, c), (endRow, endCol), self.board, isJester=False))
 
