@@ -4,7 +4,6 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pygame as p
-import math
 from chess import ChessEngine
 
 WIDTH = HEIGHT = 512

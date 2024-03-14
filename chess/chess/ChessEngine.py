@@ -51,6 +51,16 @@ class GameState():
                 self.board[move.endRow][move.endCol + 1] = self.board[move.endRow][move.endCol - 2]
                 self.board[move.endRow][move.endCol - 2] = "--"
 
+        if move.isJester == True:
+            print(move.isJester)
+            print(f'{move.startRow}, {move.startCol}')
+            print(f'{move.endRow}, {move.endCol}')
+            if self.whiteToMove:
+                self.board[move.endRow][move.endCol] = "b" + move.pieceCaptured[1]
+            else:
+                self.board[move.endRow][move.endCol] = "w" + move.pieceCaptured[1]
+
+
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.currentCastleRights.wks, self.currentCastleRights.wqs,
                                              self.currentCastleRights.bks, self.currentCastleRights.bqs))
@@ -263,13 +273,16 @@ class GameState():
     def getKnightMoves(self, r, c, moves):
         knightMoves = ((-2, 1), (-2, -1), (-1, 2), (-1, -2), (1, 2), (1, -2), (2, 1), (2, -1))
         allyColor = "w" if self.whiteToMove else "b"
+        enemyColor = "w" if not self.whiteToMove else "b"
         for m in knightMoves:
             endRow = r + m[0]
             endCol = c + m[1]
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endPiece = self.board[endRow][endCol]
-                if endPiece[0] != allyColor:
-                    moves.append(Move((r, c), (endRow, endCol), self.board))
+                if endPiece[0] == enemyColor:
+                    moves.append(Move((r, c), (endRow, endCol), self.board, isJester=True))
+                elif endPiece[0] != allyColor:
+                    moves.append(Move((r, c), (endRow, endCol), self.board, isJester=False))
 
 
 class CastleRights():
@@ -287,14 +300,13 @@ class Move():
                    "e": 4, "f": 5, "g": 6, "h": 7}
     colsToFiles = {v: k for k, v in filesToCols.items()}
 
-    def __init__(self, startSq, endSq, board, isEnPassant = False, isCastle = False):
+    def __init__(self, startSq, endSq, board, isEnPassant = False, isCastle = False, isJester = False):
         self.startRow = startSq[0]
         self.startCol = startSq[1]
         self.endRow = endSq[0]
         self.endCol= endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
-
         #pawn promotion
         self.isPawnPromotion = (self.pieceMoved == "wp" and self.endRow == 0) or (self.pieceMoved == "bp" and self.endRow == 7)
         #enpassant
@@ -304,6 +316,7 @@ class Move():
 
 
         self.isCastle = isCastle
+        self.isJester = isJester
 
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
 
